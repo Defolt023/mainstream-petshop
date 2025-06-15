@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Вход по номеру телефона</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .checkout-container {
+      max-width: 500px;
+      margin: 60px auto;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .phone-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .phone-prefix {
+      font-size: 18px;
+      color: #007bff;
+    }
+
+    .phone-input {
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .checkout-form button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .checkout-form button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Мейнстрим</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="checkout-container">
+      <h2>Введите номер телефона</h2>
+      <form id="phone-form" class="checkout-form">
+        <label for="phone">Номер телефона:</label>
+        <div class="phone-wrapper">
+          <span class="phone-prefix">+7</span>
+          <input type="tel" id="phone" class="phone-input" placeholder="9001234567" required />
+        </div>
+        <button type="submit">Получить код</button>
+      </form>
+    </section>
+  </main>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <!-- Логотип -->
+      <div class="logo">
+        <img src="/images/logo-footer.png" alt="Мейнстрим" width="50">
+        <p>© 2024 «Мейнстрим»</p>
+      </div>
+
+      <!-- Контакты -->
+      <div class="contacts">
+        <p>+7 (900) 123-45-67</p>
+        <p>info@mainstream.ru</p>
+        <p>с 9:00 до 21:00 ежедневно</p>
+      </div>
+
+      <!-- Документы -->
+      <div class="documents">
+        <h3>Документы</h3>
+        <ul>
+          <li><a href="privacy-policy.html">Политика в отношении обработки персональных данных</a></li>
+          <li><a href="consent.html">Согласие на обработку персональных данных</a></li>
+          <li><a href="payment-rules.html">Правила оплаты</a></li>
+        </ul>
+      </div>
+
+      <!-- Платежные системы -->
+      <div class="payment-methods">
+        <img src="/images/footer-visa2.png" alt="Visa" width="80">
+        <img src="/images/footer-mastercard2.png" alt="Mastercard" width="80">
+        <img src="/images/footer-mir.png" alt="МИР" width="80">
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script>
+    function getFullPhone() {
+      const input = document.getElementById("phone");
+      const number = input.value.replace(/\D/g, "");
+
+      if (!input.checkValidity()) {
+        alert("Пожалуйста, заполните поле");
+        return null;
+      }
+
+      if (number.length !== 10) {
+        alert("Введите 10 цифр после +7");
+        return null;
+      }
+
+      return "+7" + number;
+    }
+
+    // Отправка номера телефона
+    document.getElementById("phone-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const phone = getFullPhone();
+      if (!phone) return;
+
+      try {
+        const res = await fetch("http://localhost:3000/api/auth/send-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          window.location.href = `verify.html?phone=${encodeURIComponent(phone)}`;
+        } else {
+          alert(data.message || "Ошибка отправки кода");
+        }
+
+      } catch (err) {
+        console.error("Ошибка сети:", err.message);
+        alert("Не удалось подключиться к серверу");
+      }
+    });
+  </script>
+</body>
+</html>

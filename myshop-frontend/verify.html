@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Подтвердите код</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .checkout-container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 30px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      background: #fafafa;
+    }
+
+    .checkout-form input,
+    .checkout-form button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .resend-btn {
+      margin-top: 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .resend-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Мейнстрим</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="checkout-container">
+      <h2>Подтвердите вход</h2>
+      <p>Мы отправили код на номер <strong id="display-phone"></strong></p>
+
+      <form id="code-form" class="checkout-form">
+        <label for="code">Код из SMS:</label>
+        <input type="text" id="code" placeholder="123456" required />
+        <button type="submit">Подтвердить</button>
+      </form>
+
+      <button class="resend-btn" id="resend">Отправить код снова</button>
+    </section>
+  </main>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <!-- Логотип -->
+      <div class="logo">
+        <img src="/images/logo-footer.png" alt="Мейнстрим" width="50">
+        <p>© 2024 «Мейнстрим»</p>
+      </div>
+
+      <!-- Контакты -->
+      <div class="contacts">
+        <p>+7 (900) 123-45-67</p>
+        <p>info@mainstream.ru</p>
+        <p>с 9:00 до 21:00 ежедневно</p>
+      </div>
+
+      <!-- Документы -->
+      <div class="documents">
+        <h3>Документы</h3>
+        <ul>
+          <li><a href="privacy-policy.html">Политика в отношении обработки персональных данных</a></li>
+          <li><a href="consent.html">Согласие на обработку персональных данных</a></li>
+          <li><a href="payment-rules.html">Правила оплаты</a></li>
+        </ul>
+      </div>
+
+      <!-- Платежные системы -->
+      <div class="payment-methods">
+        <img src="/images/footer-visa2.png" alt="Visa" width="80">
+        <img src="/images/footer-mastercard2.png" alt="Mastercard" width="80">
+        <img src="/images/footer-mir.png" alt="МИР" width="80">
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script>
+    // Получаем телефон из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const phone = urlParams.get("phone");
+
+    if (!phone) {
+      alert("Номер телефона не указан");
+      window.location.href = "login.html";
+    } else {
+      document.getElementById("display-phone").textContent = phone;
+    }
+
+    // Обработка формы
+    document.getElementById("code-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const code = document.getElementById("code").value;
+
+      try {
+        const res = await fetch("http://localhost:3000/api/auth/verify-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, code })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem("token", data.token);
+
+          const meRes = await fetch("http://localhost:3000/api/auth/me", {
+            headers: { Authorization: "Bearer " + data.token }
+          });
+
+          if (meRes.ok) {
+            const userData = await meRes.json();
+            localStorage.setItem("user", JSON.stringify(userData));
+          } else {
+            localStorage.removeItem("token");
+            alert("Ошибка получения данных пользователя");
+            return window.location.href = "login.html";
+          }
+
+          // Перенаправление по роли
+          const user = JSON.parse(localStorage.getItem("user"));
+          if (user?.role === "admin") {
+            window.location.href = "admin.html";
+          } else {
+            window.location.href = "index.html";
+          }
+
+        } else {
+          alert(data.message || "Неверный код");
+        }
+
+      } catch (err) {
+        console.error("Ошибка сети:", err.message);
+        alert("Не удалось подключиться к серверу. Проверьте интернет.");
+      }
+    });
+
+    // Отправка кода снова
+    document.getElementById("resend").addEventListener("click", async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/auth/send-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert("Код отправлен снова!");
+        } else {
+          alert(data.message || "Ошибка при повторной отправке");
+        }
+
+      } catch (err) {
+        console.error("Ошибка при отправке кода:", err.message);
+        alert("Ошибка сети");
+      }
+    });
+  </script>
+</body>
+</html>

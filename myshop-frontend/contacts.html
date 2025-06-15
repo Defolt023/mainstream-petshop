@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Контакты | Мейнстрим</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .contact-info {
+      margin-bottom: 30px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-info h3 {
+      margin-top: 0;
+      font-size: 1.5em;
+      color: #0071b6;
+    }
+
+    .contact-info p {
+      margin: 8px 0;
+      font-size: 1em;
+      color: #333;
+    }
+
+    .contact-form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-form label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 1em;
+      text-align: left;
+    }
+
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    .contact-form button {
+      margin-top: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 12px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    .contact-form button:hover {
+      background-color: #0056b3;
+    }
+
+    .map {
+      margin-top: 40px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .map iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+      display: block;
+    }
+
+    .icon-button img {
+  filter: brightness(100%) contrast(100%) invert(100%);
+}
+  </style>
+</head>
+<body>
+
+  <header>
+  <div class="container">
+    <h1><a href="index.html" style="color: inherit; text-decoration: none;">Мейнстрим</a></h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="sets.html">Наборы</a></li>
+        <li><a href="rations.html">Рационы</a></li>
+        <li><a href="drying.html">Лакомства</a></li>
+        <li><a href="accessories.html">Аксессуары</a></li>
+        <li><a href="contacts.html">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <!-- Иконки корзины и профиля -->
+    <div id="header-icons">
+      <a href="cart.html" title="Корзина" class="icon-container">
+        <button id="cartButton" class="icon-button">
+      <img src="/images/cart.png" alt="Корзина" width="48" height="48" />
+    </button>
+      </a>
+
+      <div class="profile-icon">
+        <button id="profileIcon" class="icon-button">
+      <img src="/images/profile.png" alt="Профиль" width="48" height="48" />
+    </button>
+        <div id="profileDropdown" class="dropdown-content">
+          <a href="profile.html">Личный кабинет</a>
+          <a href="favorites.html">Избранное</a>
+          <a href="#" onclick="logout()">Выйти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <main>
+    <section class="container">
+      <!-- Блок с контактами -->
+      <div class="contact-info">
+        <h3>Где нас найти?</h3>
+        <p><strong>Адрес:</strong> г. Нижний Новгород, ул. Федосеенко, д. 49Б</p>
+        <p><strong>Телефон:</strong> +7 (900) 123-45-67</p>
+        <p><strong>Email:</strong> info@mainstream-pets.ru</p>
+        <p><strong>График работы самовывоза:</strong> Пн–Пт: 9:00–18:00</p>
+        <p><strong>График работы доставки:</strong> Пн–Сб: 9:00–22:00</p>
+      </div>
+
+      <!-- Карта самовывоза -->
+      <div class="map">
+        <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A72d285cd9a499a7c046796629aa151b0dc2162a87d2746f88b11fec9ae7fbb0a&amp;source=constructor" width="500" height="400" frameborder="0"></iframe>
+      </div>
+
+      <div class="contact-form">
+      <h3>Остались вопросы? Напишите нам</h3>
+      <form id="contactForm">
+        <label for="name">Ваше имя:</label>
+        <input type="text" id="name" name="name" placeholder="Иван Иванов" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="example@mail.ru" required />
+
+        <label for="subject">Тема обращения:</label>
+        <select id="subject" name="subject" required>
+          <option value="">Выберите тему</option>
+          <option value="order">По заказу</option>
+          <option value="product">По товару</option>
+          <option value="delivery">Доставка и самовывоз</option>
+          <option value="other">Другое</option>
+        </select>
+
+        <label for="message">Ваше сообщение:</label>
+        <textarea id="message" name="message" rows="5" placeholder="Введите ваш вопрос или комментарий..."></textarea>
+
+        <button type="submit">Отправить сообщение</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2024 Мейнстрим. Все права защищены.</p>
+</footer>
+
+<script>
+  document.getElementById("contactForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const subject = document.getElementById("subject").value;
+    const message = document.getElementById("message").value.trim();
+
+    // Пример валидации
+    if (!name || !email || !subject || !message) {
+      alert("Заполните все поля");
+      return;
+    }
+
+    // Отправка данных (в реальности — через /api/contact)
+    try {
+      const res = await fetch("http://localhost:3000/api/auth/send-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, email, subject, message })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Сообщение отправлено!");
+        this.reset();
+      } else {
+        alert(data.message || "Не удалось отправить сообщение");
+      }
+
+    } catch (err) {
+      console.error("Ошибка сети:", err.message);
+      alert("Ошибка сети");
+    }
+  });
+</script>
+
+    </section>
+  </main>
+
+ <footer>
+  <div class="container">
+    <div class="footer-content">
+      <!-- Логотип -->
+      <div class="logo">
+        <img src="/images/logo-footer.png" alt="Мейнстрим" width="50">
+        <p>© 2024 «Мейнстрим»</p>
+      </div>
+
+      <!-- Контакты -->
+      <div class="contacts">
+        <p>+7 (900) 123-45-67</p>
+        <p>info@mainstream.ru</p>
+        <p>с 9:00 до 21:00 ежедневно</p>
+      </div>
+
+      <!-- Документы -->
+      <div class="documents">
+        <h3>Документы</h3>
+        <ul>
+          <li><a href="privacy-policy.html">Политика в отношении обработки персональных данных</a></li>
+          <li><a href="consent.html">Согласие на обработку персональных данных</a></li>
+          <li><a href="payment-rules.html">Правила оплаты</a></li>
+        </ul>
+      </div>
+
+      <!-- Платежные системы -->
+      <div class="payment-methods">
+        <img src="/images/footer-visa2.png" alt="Visa" width="80">
+        <img src="/images/footer-mastercard2.png" alt="Mastercard" width="80">
+        <img src="/images/footer-mir.png" alt="МИР" width="80">
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!-- checkout.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Оформление заказа</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .checkout-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .checkout-product {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .checkout-product img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    .checkout-form input,
+    .checkout-form select,
+    .checkout-form button {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .checkout-form button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .checkout-form button:hover {
+      background-color: #218838;
+    }
+
+    .confirmation-message {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 4px;
+      display: none;
+      text-align: left;
+    }
+
+    .icon-button img {
+  filter: brightness(100%) contrast(100%) invert(100%);
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1><a href="index.html" style="color: inherit; text-decoration: none;">Мейнстрим</a></h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="sets.html">Наборы</a></li>
+        <li><a href="rations.html">Рационы</a></li>
+        <li><a href="drying.html">Лакомства</a></li>
+        <li><a href="accessories.html">Аксессуары</a></li>
+        <li><a href="contacts.html">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <!-- Иконки корзины и профиля -->
+    <div id="header-icons">
+      <a href="cart.html" title="Корзина" class="icon-container">
+        <button id="cartButton" class="icon-button">
+      <img src="/images/cart.png" alt="Корзина" width="48" height="48" />
+    </button>
+      </a>
+
+      <div class="profile-icon">
+        <button id="profileIcon" class="icon-button">
+      <img src="/images/profile.png" alt="Профиль" width="48" height="48" />
+    </button>
+        <div id="profileDropdown" class="dropdown-content">
+          <a href="profile.html">Личный кабинет</a>
+          <a href="favorites.html">Избранное</a>
+          <a href="#" onclick="logout()">Выйти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="checkout-container">
+    <h2>Оформление заказа</h2>
+    <div id="checkout-products"></div>
+
+    <!-- Сообщение об успешном заказе -->
+    <div id="confirmation-message" class="confirmation-message"></div>
+
+    <!-- Форма оформления -->
+    <form id="order-form" class="checkout-form">
+      <input type="text" id="name" placeholder="Имя" required />
+      <input type="tel" id="phone" placeholder="Телефон" required />
+
+      <label for="payment-method">Способ оплаты:</label>
+      <select id="payment-method" required>
+        <option value="">Выберите способ оплаты</option>
+        <option value="cash_or_card_on_delivery">Наличными / Картой при получении</option>
+      </select>
+
+      <button type="submit">Подтвердить заказ</button>
+    </form>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <!-- Логотип -->
+      <div class="logo">
+        <img src="/images/logo-footer.png" alt="Мейнстрим" width="50">
+        <p>© 2024 «Мейнстрим»</p>
+      </div>
+
+      <!-- Контакты -->
+      <div class="contacts">
+        <p>+7 (900) 123-45-67</p>
+        <p>info@mainstream.ru</p>
+        <p>с 9:00 до 21:00 ежедневно</p>
+      </div>
+
+      <!-- Документы -->
+      <div class="documents">
+        <h3>Документы</h3>
+        <ul>
+          <li><a href="privacy-policy.html">Политика в отношении обработки персональных данных</a></li>
+          <li><a href="consent.html">Согласие на обработку персональных данных</a></li>
+          <li><a href="payment-rules.html">Правила оплаты</a></li>
+        </ul>
+      </div>
+
+      <!-- Платежные системы -->
+      <div class="payment-methods">
+        <img src="/images/footer-visa2.png" alt="Visa" width="80">
+        <img src="/images/footer-mastercard2.png" alt="Mastercard" width="80">
+        <img src="/images/footer-mir.png" alt="МИР" width="80">
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const token = localStorage.getItem("token");
+  if (!token) window.location.href = "login.html";
+
+  async function displayCheckoutProducts() {
+  const container = document.getElementById("checkout-products");
+
+  try {
+    const res = await fetch("http://localhost:3000/api/cart", {
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    const cart = await res.json();
+
+    if (!res.ok || !Array.isArray(cart)) {
+      throw new Error("Ошибка загрузки корзины");
+    }
+
+    if (cart.length === 0) {
+      container.innerHTML = "<p>Ваша корзина пуста</p>";
+      return;
+    }
+
+    let total = 0;
+
+    // Теперь правильно обрабатываем ID товаров
+    for (const productId of cart) {
+      // Убедимся, что productId — строка, а не объект
+      const id = typeof productId === "object" && productId._id ? productId._id : productId;
+
+      const productRes = await fetch(`http://localhost:3000/api/products/${id}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      if (!productRes.ok) continue;
+
+      const product = await productRes.json();
+      total += product.price;
+
+      const imageUrl = product.image.startsWith("http")
+        ? product.image
+        : `http://localhost:3000${product.image}`;
+
+      const div = document.createElement("div");
+      div.className = "checkout-product";
+      div.innerHTML = `
+        <img src="${imageUrl}" alt="${product.name}" loading="lazy" />
+        <div>
+          <strong>${product.name}</strong><br/>
+          <span>${product.price} ₽</span>
+        </div>
+      `;
+      container.appendChild(div);
+    }
+
+    // Показываем итоговую сумму
+    const totalDiv = document.createElement("div");
+    totalDiv.style.marginTop = "20px";
+    totalDiv.innerHTML = `<strong>Итого: ${total.toFixed(2)} ₽</strong>`;
+    container.appendChild(totalDiv);
+
+  } catch (err) {
+    console.error("Ошибка загрузки товаров:", err.message);
+    container.innerHTML = "<p>Не удалось загрузить товары из корзины</p>";
+  }
+}
+
+  // Обработка формы
+  document.getElementById("order-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const paymentMethod = document.getElementById("payment-method").value;
+
+    if (!name || !phone || !paymentMethod) {
+      alert("Заполните все поля");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ name, phone, paymentMethod })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Показываем сообщение и редиректим через 5 секунд
+        const confirmationMessage = document.getElementById("confirmation-message");
+        confirmationMessage.style.display = "block";
+        confirmationMessage.innerHTML = `
+          ✅ Ваш заказ успешно оформлен.<br/>
+          📞 С вами свяжутся по указанному номеру телефона для уточнения деталей доставки.
+        `;
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 5000);
+
+      } else {
+        alert(data.message || "Ошибка оформления заказа");
+      }
+
+    } catch (err) {
+      console.error("Ошибка сети:", err.message);
+      alert("Не удалось отправить заказ");
+    }
+  });
+
+  // Загружаем товары при старте
+  document.addEventListener("DOMContentLoaded", () => {
+    displayCheckoutProducts();
+  });
+</script>
+
+</body>
+</html>

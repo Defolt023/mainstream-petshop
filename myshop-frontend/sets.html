@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Наборы - Мейнстрим</title>
+  <link rel="stylesheet" href="styles.css" />
+
+<!-- Красивые тосты вместо alert -->
+<style>
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .toast.success {
+    background-color: #28a745;
+  }
+
+  .toast.error {
+    background-color: #dc3545;
+  }
+
+  .icon-button img {
+  filter: brightness(100%) contrast(100%) invert(100%);
+}
+</style>
+
+<div class="toast" id="toast">Добавлено в корзину</div>
+
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1><a href="index.html" style="color: inherit; text-decoration: none;">Мейнстрим</a></h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="sets.html">Наборы</a></li>
+        <li><a href="rations.html">Рационы</a></li>
+        <li><a href="drying.html">Лакомства</a></li>
+        <li><a href="accessories.html">Аксессуары</a></li>
+        <li><a href="contacts.html">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <!-- Иконки корзины и профиля -->
+    <div id="header-icons">
+      <a href="cart.html" title="Корзина" class="icon-container">
+        <button id="cartButton" class="icon-button">
+      <img src="/images/cart.png" alt="Корзина" width="48" height="48" />
+    </button>
+      </a>
+
+      <div class="profile-icon">
+        <button id="profileIcon" class="icon-button">
+      <img src="/images/profile.png" alt="Профиль" width="48" height="48" />
+    </button>
+        <div id="profileDropdown" class="dropdown-content">
+          <a href="profile.html">Личный кабинет</a>
+          <a href="favorites.html">Избранное</a>
+          <a href="#" onclick="logout()">Выйти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="container">
+    <h2>Наборы</h2>
+    <div id="products-container" class="product-grid"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <!-- Логотип -->
+      <div class="logo">
+        <img src="/images/logo-footer.png" alt="Мейнстрим" width="50">
+        <p>© 2024 «Мейнстрим»</p>
+      </div>
+
+      <!-- Контакты -->
+      <div class="contacts">
+        <p>+7 (900) 123-45-67</p>
+        <p>info@mainstream.ru</p>
+        <p>с 9:00 до 21:00 ежедневно</p>
+      </div>
+
+      <!-- Документы -->
+      <div class="documents">
+        <h3>Документы</h3>
+        <ul>
+          <li><a href="privacy-policy.html">Политика в отношении обработки персональных данных</a></li>
+          <li><a href="consent.html">Согласие на обработку персональных данных</a></li>
+          <li><a href="payment-rules.html">Правила оплаты</a></li>
+        </ul>
+      </div>
+
+      <!-- Платежные системы -->
+      <div class="payment-methods">
+        <img src="/images/footer-visa2.png" alt="Visa" width="80">
+        <img src="/images/footer-mastercard2.png" alt="Mastercard" width="80">
+        <img src="/images/footer-mir.png" alt="МИР" width="80">
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Глобальные данные -->
+<script>
+  window.appData = {
+    token: localStorage.getItem("token"),
+    user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null
+  };
+
+  function updateAppData() {
+    window.appData.token = localStorage.getItem("token");
+    window.appData.user = localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user"))
+      : null;
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    alert("Вы вышли из аккаунта");
+    window.location.href = "login.html";
+  }
+</script>
+
+<!-- Подключение catalog.js -->
+<script>
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    window.location.href = "login.html";
+  } else {
+    const script = document.createElement("script");
+    script.src = "catalog.js";
+
+    script.onload = () => {
+  loadProducts("sets");
+};
+
+    script.onerror = () => {
+      console.error("Не удалось загрузить catalog.js");
+      document.getElementById("products-container").innerHTML = "<p>Ошибка загрузки данных</p>";
+    };
+
+    document.body.appendChild(script);
+  }
+</script>
+
+<script>
+  function showSuccessToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.className = "toast success show";
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2000);
+  }
+
+  function showErrorToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.className = "toast error show";
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>

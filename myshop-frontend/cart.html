@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Корзина - Мейнстрим</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .product-card {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 20px;
+    }
+
+    .product-info h3 {
+      margin: 0;
+      font-size: 1.1em;
+    }
+
+    .product-info p {
+      margin: 5px 0;
+      color: #555;
+    }
+
+    .remove-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: auto;
+    }
+
+    .total {
+      margin-top: 20px;
+      font-size: 1.2em;
+      text-align: right;
+    }
+
+    .checkout-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .checkout-buttons button {
+      flex: 1;
+      margin-left: 5px;
+      padding: 10px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .clear-cart-btn {
+      background-color: #ffc107;
+      color: black;
+    }
+
+    .checkout-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .icon-button img {
+  filter: brightness(100%) contrast(100%) invert(100%);
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1><a href="index.html" style="color: inherit; text-decoration: none;">Мейнстрим</a></h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="sets.html">Наборы</a></li>
+        <li><a href="rations.html">Рационы</a></li>
+        <li><a href="drying.html">Лакомства</a></li>
+        <li><a href="accessories.html">Аксессуары</a></li>
+        <li><a href="contacts.html">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <!-- Иконки корзины и профиля -->
+    <div id="header-icons">
+      <a href="cart.html" title="Корзина" class="icon-container">
+        <button id="cartButton" class="icon-button">
+      <img src="/images/cart.png" alt="Корзина" width="48" height="48" />
+    </button>
+      </a>
+
+      <div class="profile-icon">
+        <button id="profileIcon" class="icon-button">
+      <img src="/images/profile.png" alt="Профиль" width="48" height="48" />
+    </button>
+        <div id="profileDropdown" class="dropdown-content">
+          <a href="profile.html">Личный кабинет</a>
+          <a href="favorites.html">Избранное</a>
+          <a href="#" onclick="logout()">Выйти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="container">
+    <h2>🛒 Ваша корзина</h2>
+    <div id="cart-products-container"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <!-- Логотип -->
+      <div class="logo">
+        <img src="/images/logo-footer.png" alt="Мейнстрим" width="50">
+        <p>© 2024 «Мейнстрим»</p>
+      </div>
+
+      <!-- Контакты -->
+      <div class="contacts">
+        <p>+7 (900) 123-45-67</p>
+        <p>info@mainstream.ru</p>
+        <p>с 9:00 до 21:00 ежедневно</p>
+      </div>
+
+      <!-- Документы -->
+      <div class="documents">
+        <h3>Документы</h3>
+        <ul>
+          <li><a href="privacy-policy.html">Политика в отношении обработки персональных данных</a></li>
+          <li><a href="consent.html">Согласие на обработку персональных данных</a></li>
+          <li><a href="payment-rules.html">Правила оплаты</a></li>
+        </ul>
+      </div>
+
+      <!-- Платежные системы -->
+      <div class="payment-methods">
+        <img src="/images/footer-visa2.png" alt="Visa" width="80">
+        <img src="/images/footer-mastercard2.png" alt="Mastercard" width="80">
+        <img src="/images/footer-mir.png" alt="МИР" width="80">
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const token = localStorage.getItem("token");
+  if (!token) window.location.href = "login.html";
+
+  async function loadCart() {
+    try {
+      const res = await fetch("http://localhost:3000/api/cart", {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      const cart = await res.json();
+
+      const container = document.getElementById("cart-products-container");
+      container.innerHTML = "";
+
+      if (cart.length === 0) {
+        container.innerHTML = "<p>Ваша корзина пуста.</p>";
+        return;
+      }
+
+      let totalCost = 0;
+
+      // Отрисовываем каждый товар с правильным URL картинки
+      for (const product of cart) {
+        const imageUrl = product.image?.startsWith("http")
+          ? product.image
+          : `http://localhost:3000${product.image || "/uploads/placeholder.png"}`;
+
+        totalCost += product.price;
+
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <img src="${imageUrl}" alt="${product.name || "Товар"}" loading="lazy" />
+          <div class="product-info">
+            <h3>${product.name || "Неизвестный товар"}</h3>
+            <p>Цена: ${product.price || 0} ₽</p>
+          </div>
+          <button class="remove-btn" onclick="removeFromCart('${product._id}')">🗑️ Удалить</button>
+        `;
+        container.appendChild(card);
+      }
+
+      // Итоговая сумма
+      const totalDiv = document.createElement("div");
+      totalDiv.className = "total";
+      totalDiv.textContent = `Итого: ${totalCost.toFixed(2)} ₽`;
+      container.appendChild(totalDiv);
+
+      // Кнопки действий
+      const buttonsDiv = document.createElement("div");
+      buttonsDiv.className = "checkout-buttons";
+      buttonsDiv.innerHTML = `
+        <button class="clear-cart-btn" onclick="clearCart()">Очистить корзину</button>
+        <button class="checkout-btn" onclick="window.location.href='checkout.html'">Оформить заказ</button>
+      `;
+      container.appendChild(buttonsDiv);
+
+    } catch (err) {
+      console.error("Ошибка загрузки корзины:", err.message);
+      alert("Не удалось загрузить корзину");
+    }
+  }
+
+  // Удалить товар из корзины
+  async function removeFromCart(productId) {
+    const res = await fetch(`http://localhost:3000/api/cart/remove/${productId}`, {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    if (res.ok) {
+      loadCart(); // обновляем список
+    } else {
+      alert("Не удалось удалить товар");
+    }
+  }
+
+  // Очистить всю корзину
+  async function clearCart() {
+    const res = await fetch("http://localhost:3000/api/cart/clear", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    if (res.ok) {
+      loadCart();
+    } else {
+      alert("Не удалось очистить корзину");
+    }
+  }
+
+  // Загружаем при старте
+  document.addEventListener("DOMContentLoaded", () => {
+    loadCart();
+  });
+</script>
+
+</body>
+</html>

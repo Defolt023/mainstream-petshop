@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Избранное</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .product {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .product img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .product h3 {
+      font-size: 1.1em;
+      margin: 0 0 5px 0;
+    }
+
+    .product p {
+      margin: 5px 0;
+      color: #555;
+    }
+
+    .product button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .product button:hover {
+      background-color: #c82333;
+    }
+
+    .icon-button img {
+  filter: brightness(100%) contrast(100%) invert(100%);
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1><a href="index.html" style="color: inherit; text-decoration: none;">Мейнстрим</a></h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="sets.html">Наборы</a></li>
+        <li><a href="rations.html">Рационы</a></li>
+        <li><a href="drying.html">Лакомства</a></li>
+        <li><a href="accessories.html">Аксессуары</a></li>
+        <li><a href="contacts.html">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <!-- Иконки корзины и профиля -->
+    <div id="header-icons">
+      <a href="cart.html" title="Корзина" class="icon-container">
+        <button id="cartButton" class="icon-button">
+      <img src="/images/cart.png" alt="Корзина" width="48" height="48" />
+    </button>
+      </a>
+
+      <div class="profile-icon">
+        <button id="profileIcon" class="icon-button">
+      <img src="/images/profile.png" alt="Профиль" width="48" height="48" />
+    </button>
+        <div id="profileDropdown" class="dropdown-content">
+          <a href="profile.html">Личный кабинет</a>
+          <a href="favorites.html">Избранное</a>
+          <a href="#" onclick="logout()">Выйти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="container">
+    <h2>Избранное</h2>
+    <div id="products-container"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <!-- Логотип -->
+      <div class="logo">
+        <img src="/images/logo-footer.png" alt="Мейнстрим" width="50">
+        <p>© 2024 «Мейнстрим»</p>
+      </div>
+
+      <!-- Контакты -->
+      <div class="contacts">
+        <p>+7 (900) 123-45-67</p>
+        <p>info@mainstream.ru</p>
+        <p>с 9:00 до 21:00 ежедневно</p>
+      </div>
+
+      <!-- Документы -->
+      <div class="documents">
+        <h3>Документы</h3>
+        <ul>
+          <li><a href="privacy-policy.html">Политика в отношении обработки персональных данных</a></li>
+          <li><a href="consent.html">Согласие на обработку персональных данных</a></li>
+          <li><a href="payment-rules.html">Правила оплаты</a></li>
+        </ul>
+      </div>
+
+      <!-- Платежные системы -->
+      <div class="payment-methods">
+        <img src="/images/footer-visa2.png" alt="Visa" width="80">
+        <img src="/images/footer-mastercard2.png" alt="Mastercard" width="80">
+        <img src="/images/footer-mir.png" alt="МИР" width="80">
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const token = localStorage.getItem("token");
+  if (!token) window.location.href = "login.html";
+
+  async function loadFavorites() {
+    try {
+      const res = await fetch("http://localhost:3000/api/auth/favorites", {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      if (!res.ok) {
+        throw new Error("Ошибка загрузки избранного");
+      }
+
+      const favorites = await res.json();
+      const container = document.getElementById("products-container");
+      container.innerHTML = "";
+
+      if (favorites.length === 0) {
+        container.innerHTML = "<p>Нет товаров в избранном</p>";
+        return;
+      }
+
+      // Отрисовываем каждый товар с правильным URL картинки
+      favorites.forEach(product => {
+        // Формируем URL к изображению правильно
+        let imageUrl = product.image?.startsWith("http")
+          ? product.image
+          : `http://localhost:3000${product.image || "/uploads/placeholder.png"}`;
+
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `
+          <img src="${imageUrl}" alt="${product.name || "Неизвестный товар"}" loading="lazy" />
+          <h3>${product.name || "Неизвестный товар"}</h3>
+          <p>Цена: ${product.price || 0} ₽</p>
+          <button data-id="${product._id}">🗑️ Удалить из избранного</button>
+        `;
+        container.appendChild(div);
+
+        // Обработчик удаления
+        div.querySelector("button").addEventListener("click", async () => {
+          const productId = product._id;
+
+          const removeRes = await fetch(`http://localhost:3000/api/auth/favorites/${productId}`, {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + token
+            }
+          });
+
+          if (removeRes.ok) {
+            loadFavorites(); // обновляем список
+          } else {
+            alert("Не удалось удалить товар");
+          }
+        });
+      });
+
+    } catch (err) {
+      console.error("Ошибка загрузки избранного:", err.message);
+      document.getElementById("products-container").innerHTML = "<p>Не удалось загрузить избранное</p>";
+    }
+  }
+
+  loadFavorites();
+</script>
+
+</body>
+</html>

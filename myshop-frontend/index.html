@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Мейнстрим - Магазин собачьих лакомств</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+
+    /* === Блок "Оплата и доставка" === */
+#delivery-info {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  margin-top: 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+#delivery-info h3,
+#delivery-info h4 {
+  margin-top: 20px;
+}
+
+#delivery-info p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+#delivery-info ul {
+  list-style-type: disc;
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+#delivery-info li {
+  margin-bottom: 8px;
+}
+
+    .main-content {
+      display: flex;
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .article-list {
+      width: 250px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+    }
+
+    .article-list h3 {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      color: #0071b6;
+    }
+
+    .article-list ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .article-list li {
+      margin-bottom: 10px;
+    }
+
+    .article-list a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      display: block;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+
+    .article-list a:hover,
+    .article-list a.active {
+      background-color: #e9ecef;
+    }
+
+    .article-content {
+      flex: 1;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .article-content h2 {
+      margin-top: 0;
+      color: #0071b6;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+      }
+
+      .article-list {
+        width: 100%;
+      }
+    }
+
+    .icon-button img {
+  filter: brightness(100%) contrast(100%) invert(100%);
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1><a href="index.html" style="color: inherit; text-decoration: none;">Мейнстрим</a></h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="sets.html">Наборы</a></li>
+        <li><a href="rations.html">Рационы</a></li>
+        <li><a href="drying.html">Лакомства</a></li>
+        <li><a href="accessories.html">Аксессуары</a></li>
+        <li><a href="contacts.html">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <!-- Иконки корзины и профиля -->
+    <div id="header-icons">
+      <a href="cart.html" title="Корзина" class="icon-container">
+        <button id="cartButton" class="icon-button">
+      <img src="/images/cart.png" alt="Корзина" width="48" height="48" />
+    </button>
+      </a>
+
+      <div class="profile-icon">
+        <button id="profileIcon" class="icon-button">
+      <img src="/images/profile.png" alt="Профиль" width="48" height="48" />
+    </button>
+        <div id="profileDropdown" class="dropdown-content">
+          <a href="profile.html">Личный кабинет</a>
+          <a href="favorites.html">Избранное</a>
+          <a href="#" onclick="logout()">Выйти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- Блок с информацией о доставке и оплате -->
+<section class="container" id="delivery-info">
+  <h2>Оплата и доставка</h2>
+
+  <p>
+    Мы не готовим наборы заранее — каждый заказ собирается индивидуально после полной безналичной оплаты на сайте.
+    Оплата производится банковскими картами (Visa, Mastercard, МИР и др.) через защищённую систему онлайн-платежей.
+  </p>
+
+  <p>
+    После оплаты на указанный вами контактный номер телефона свяжется наш оператор для уточнения деталей доставки.
+    Чтобы купить натуральную еду для собаки — просто добавьте товары в корзину и оформите заказ.
+  </p>
+
+  <h3>Что происходит после оформления заказа?</h3>
+  <p>
+    После того как вы оформили и оплатили заказ, мы перезвоним вам, чтобы уточнить все детали рациона и доставки.
+    В этот же или следующий день мы приготовим ваш набор, заморозим его и доставим в согласованное время.
+    Если до оформления остались вопросы — звоните нам, мы с радостью поможем подобрать подходящий рацион.
+  </p>
+
+  <h3>Доставка</h3>
+  <p><strong>Стоимость доставки в Нижнем Новгороде:</strong></p>
+  <ul>
+    <li>по нижней части города – 150 руб.</li>
+    <li>по верхней части города – 300 руб.</li>
+    <li>по городам: Бор, Кстово, Дзержинск, Балахна — возможна по предварительному согласованию</li>
+  </ul>
+
+  <h4>Важно!</h4>
+  <ul>
+    <li>Заказы, оформленные и оплаченные после 12:00, доставляются на следующий день</li>
+    <li>Доставка по городу осуществляется с 14:00 до 23:00</li>
+    <li>Мы привезём вам замороженные продукты — не забывайте сразу убрать их в морозилку</li>
+    <li>Вы можете изменить адрес и дату доставки, позвонив нам не позднее чем за день</li>
+    <li>Если вас не будет по указанному адресу — повторная доставка оплачивается отдельно</li>
+    <li>Бесплатное ожидание водителя — не более 10 минут</li>
+  </ul>
+
+  <p><strong>Обратите внимание:</strong> Доставка в удалённые районы возможна только в течение дня (с 14:00 до 23:00)</p>
+</section>
+
+  <section id="product-catalog" class="container">
+    <h2></h2>
+
+    <div class="main-content">
+      <!-- Список статей -->
+      <div class="article-list">
+        <h3>Статьи о питании</h3>
+        <ul>
+          <li><a href="#" data-article="nutrition-dog">Как правильно кормить собаку</a></li>
+          <li><a href="#" data-article="balance">Баланс в рационе</a></li>
+          <li><a href="#" data-article="dry-food">Сухой корм vs Натуралка</a></li>
+          <li><a href="#" data-article="allergies">Аллергии у собак</a></li>
+          <li><a href="#" data-article="puppy-food">Чем кормить щенка</a></li>
+          <li><a href="#" data-article="senior-dog">Питание пожилых собак</a></li>
+          <li><a href="#" data-article="feeding-schedule">График кормления</a></li>
+          <li><a href="#" data-article="hydration">Важность воды</a></li>
+        </ul>
+      </div>
+
+      <!-- Отображение содержимого статьи -->
+      <div class="article-content" id="article-content">
+        <h2>Выберите статью</h2>
+        <p>Чтобы прочитать статью, нажмите на неё слева.</p>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <!-- Логотип -->
+      <div class="logo">
+        <img src="/images/logo-footer.png" alt="Мейнстрим" width="50">
+        <p>© 2025 «Мейнстрим»</p>
+      </div>
+
+      <!-- Контакты -->
+      <div class="contacts">
+        <p>+7 (900) 123-45-67</p>
+        <p>info@mainstream.ru</p>
+        <p>с 9:00 до 21:00 ежедневно</p>
+      </div>
+
+      <!-- Документы -->
+      <div class="documents">
+        <h3>Документы</h3>
+        <ul>
+          <li><a href="/documents/popd.pdf" target="_blank" rel="noopener noreferrer">
+            Политика в отношении обработки персональных данных</a></li>
+          <li><a href="/documents/snopd.pdf" target="_blank" rel="noopener noreferrer">
+            Согласие на обработку персональных данных</a></li>
+          <li><a href="/documents/pp.pdf" target="_blank" rel="noopener noreferrer">
+            Правила оплаты</a></li>
+        </ul>
+      </div>
+
+      <!-- Платежные системы -->
+      <div class="payment-methods">
+        <img src="/images/footer-visa2.png" alt="Visa" width="80">
+        <img src="/images/footer-mastercard2.png" alt="Mastercard" width="80">
+        <img src="/images/footer-mir.png" alt="МИР" width="80">
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Модальное окно товара -->
+<div class="product-modal" id="productModal" style="display: none;">
+  <div class="product-modal-content">
+    <img id="modalImage" src="" alt="Фото товара" />
+    <h3 id="modalName">Название</h3>
+    <p><strong>Цена:</strong> <span id="modalPrice">0</span> ₽</p>
+    <p><strong>В наличии:</strong> <span id="modalStock">0</span> шт.</p>
+    <p><strong>Категория:</strong> <span id="modalCategory"></span></p>
+    <p id="modalDescription"><strong>Описание:</strong> Нет данных</p>
+    <button class="close-btn" onclick="closeProductModal()">Закрыть</button>
+  </div>
+</div>
+
+<style>
+  /* Вставь сюда стили из предыдущего ответа */
+</style>
+
+<script>
+  function showProductDetails(product) {
+    const modal = document.getElementById("productModal");
+    const modalImage = document.getElementById("modalImage");
+    const modalName = document.getElementById("modalName");
+    const modalPrice = document.getElementById("modalPrice");
+    const modalStock = document.getElementById("modalStock");
+    const modalCategory = document.getElementById("modalCategory");
+    const modalDescription = document.getElementById("modalDescription");
+
+    modalImage.src = product.image.startsWith("http")
+                     ? product.image
+                     : `http://localhost:3000${product.image}`;
+    modalName.textContent = product.name;
+    modalPrice.textContent = product.price;
+    modalStock.textContent = product.stock || 0;
+    modalCategory.textContent = getCategoryTitle(product.category);
+    modalDescription.innerHTML = `<strong>Описание:</strong> ${product.description || "Нет описания"}`;
+
+    modal.style.display = "flex";
+  }
+
+  function closeProductModal() {
+    const modal = document.getElementById("productModal");
+    modal.style.display = "none";
+  }
+
+  function getCategoryTitle(category) {
+    switch (category) {
+      case "sets": return "Наборы";
+      case "rations": return "Рационы";
+      case "drying": return "Лакомства";
+      case "accessories": return "Аксессуары";
+      default: return "Неизвестная категория";
+    }
+  }
+</script>
+
+<!-- Глобальные данные -->
+<script>
+  window.appData = {
+    token: localStorage.getItem("token"),
+    user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null
+  };
+
+  function updateAppData() {
+    window.appData.token = localStorage.getItem("token");
+    window.appData.user = localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user"))
+      : null;
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    alert("Вы вышли из аккаунта");
+    window.location.href = "login.html";
+  }
+</script>
+
+<!-- Подключение catalog.js -->
+<script>
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    window.location.href = "login.html";
+  } else {
+    const script = document.createElement("script");
+    script.src = "catalog.js";
+
+    script.onload = () => {
+      // Загружаем товары
+      loadProducts();
+    };
+
+    document.body.appendChild(script);
+  }
+</script>
+
+<!-- Логика отрисовки статей -->
+<script>
+  // Статические статьи
+  const articles = {
+    "nutrition-dog": {
+      title: "Как правильно кормить собаку",
+      content: `
+        <p>Правильное питание — основа здоровья вашего питомца. 
+           Собакам нужна сбалансированная диета, которая включает:
+           белки, жиры, углеводы, витамины и минералы.</p>
+        <p>Не забывайте о регулярности приёмов пищи и контроле порций.
+           Это помогает избежать переедания и ожирения.</p>
+      `
+    },
+    "balance": {
+      title: "Баланс в рационе",
+      content: `
+        <p>Рацион должен быть сбалансированным и разнообразным.
+           Убедитесь, что ваш питомец получает достаточно:</p>
+        <ul>
+          <li>Белков — для мышц и иммунитета</li>
+          <li>Жиров — для энергии и шерсти</li>
+          <li>Углеводов — для активности</li>
+          <li>Витаминов и микроэлементов</li>
+        </ul>
+        <p>При выборе готовых кормов обращайте внимание на состав и отзывы ветеринаров.</p>
+      `
+    },
+    "dry-food": {
+      title: "Сухой корм vs Натуралка",
+      content: `
+        <p>Сухой корм удобен в использовании и хранении. Он помогает чистить зубы животного.
+           Однако натуральное питание может быть более полезным, если вы знаете меру.</p>
+        <p>Примеры натуральных продуктов:</p>
+        <ul>
+          <li>Говядина (варёная)</li>
+          <li>Куриные яйца</li>
+          <li>Овощи (морковь, тыква)</li>
+          <li>Рис, гречка</li>
+        </ul>
+        <p>Главное — следить за балансом и гигиеной!</p>
+      `
+    },
+    "allergies": {
+      title: "Аллергии у собак",
+      content: `
+        <p>Аллергия у собак может проявляться как кожные реакции или расстройства ЖКТ.</p>
+        <p>Частые аллергены:</p>
+        <ul>
+          <li>Зерновые</li>
+          <li>Молочные продукты</li>
+          <li>Курица</li>
+          <li>Яйца</li>
+        </ul>
+        <p>Если заметили симптомы — проконсультируйтесь с ветеринаром.</p>
+      `
+    },
+
+    "puppy-food": {
+    title: "Чем кормить щенка",
+    content: `
+      <p>Щенки требуют особого внимания к рациону. 
+         Им нужна пища, богатая белками и кальцием для правильного развития.</p>
+      <p>В первые месяцы жизни собака растёт очень быстро, поэтому важно:
+        <ul>
+          <li>Кормление по графику (3–4 раза в день)</li>
+          <li>Высокое содержание животных белков</li>
+          <li>Минералы и витамины для формирования костей и зубов</li>
+        </ul>
+      </p>
+      <p>Если вы выбираете натуральное питание, обязательно добавляйте в рацион:</p>
+      <ul>
+        <li>Говядину (варёную, без специй)</li>
+        <li>Рис или гречку</li>
+        <li>Кальций (можно через добавки, если нет молочных продуктов)</li>
+        <li>Питьевую воду в свободном доступе</li>
+      </ul>
+      <p>Не забывайте о чистоте посуды и контроле за реакцией организма.</p>
+    `
+  },
+
+  "senior-dog": {
+    title: "Питание пожилых собак",
+    content: `
+      <p>С возрастом метаболизм у собак замедляется, и рацион тоже должен меняться.</p>
+      <p>Основные рекомендации:</p>
+      <ul>
+        <li>Белки — должны быть легкоусвояемыми</li>
+        <li>Жиры — снижены, особенно насыщенные</li>
+        <li>Клетчатка — помогает работе ЖКТ</li>
+        <li>Витамины A, C, E — поддерживают иммунитет</li>
+      </ul>
+      <p>Также стоит обратить внимание на:</p>
+      <ul>
+        <li>Добавки с глюкозамином для суставов</li>
+        <li>Меньшее количество углеводов</li>
+        <li>Поддержание гидратации</li>
+        <li>Регулярное взвешивание и контроль веса</li>
+      </ul>
+      <p>Лучше всего использовать корма категории «для взрослых» или «для старших».</p>
+    `
+  },
+
+  "feeding-schedule": {
+    title: "Правильный график кормления",
+    content: `
+      <p>Установление режима кормления — важная часть ухода за собакой.</p>
+      <p>Для разных возрастов график будет отличаться:</p>
+      <table style="width:100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background-color: #f1f1f1; color: #333;">
+            <th style="border: 1px solid #ccc; padding: 8px;">Возраст</th>
+            <th style="border: 1px solid #ccc; padding: 8px;">Количество приёмов пищи</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>до 3 месяцев</td>
+            <td>4 раза в день</td>
+          </tr>
+          <tr>
+            <td>3–6 месяцев</td>
+            <td>3 раза в день</td>
+          </tr>
+          <tr>
+            <td>6–12 месяцев</td>
+            <td>2 раза в день</td>
+          </tr>
+          <tr>
+            <td>старше 1 года</td>
+            <td>1–2 раза в день</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Кормите в одно и то же время — это поможет избежать стресса у животного.</p>
+      <p>Если используете готовый корм, следуйте инструкции на упаковке.</p>
+    `
+  },
+
+  "hydration": {
+    title: "Важность воды для собак",
+    content: `
+      <p>Нельзя недооценивать значение воды в рационе вашего питомца.</p>
+      <p>Вода — основа всех биологических процессов в организме собаки.</p>
+      <p>Примеры, когда собаке нужно больше жидкости:</p>
+      <ul>
+        <li>После физической активности</li>
+        <li>В жару или холод</li>
+        <li>При болезнях или беременности</li>
+        <li>При натуральном питании</li>
+      </ul>
+      <p>Как понять, что собака обезвожена:</p>
+      <ul>
+        <li>Сухой нос</li>
+        <li>Вялость, отсутствие реакции</li>
+        <li>Сухие десны</li>
+        <li>Сложно восстанавливается кожа при надавливании</li>
+      </ul>
+      <p>Всегда держите свежую воду в доступном месте.</p>
+    `
+  }
+    
+  };
+
+  // Обработчик клика по статьям
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".article-list a").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const articleId = link.getAttribute("data-article");
+        renderArticle(articleId);
+
+        // Активный стиль
+        document.querySelectorAll(".article-list a").forEach(a => a.classList.remove("active"));
+        link.classList.add("active");
+      });
+    });
+
+    // По умолчанию показываем приветствие
+    renderArticle("nutrition-dog");
+  });
+
+  // === Функция отрисовки статей ===
+  function renderArticle(id) {
+    const contentContainer = document.getElementById("article-content");
+    const article = articles[id];
+
+    if (!article) return;
+
+    contentContainer.innerHTML = `
+      <h2>${article.title}</h2>
+      ${article.content}
+    `;
+  }
+</script>
+</body>
+</html>

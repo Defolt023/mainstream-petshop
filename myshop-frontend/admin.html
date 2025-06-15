@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Админ-панель</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .admin-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #0071b6;
+    }
+
+    form input,
+    form select,
+    form textarea,
+    form button {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-edit {
+      background-color: #ffc107;
+    }
+
+    /* === Модальное окно редактирования === */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      display: none;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      width: 500px;
+      border-radius: 8px;
+    }
+
+    .modal-content label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .modal-content input,
+    .modal-content textarea,
+    .modal-content select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .icon-button img {
+  filter: brightness(100%) contrast(100%) invert(100%);
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>Мейнстрим - Админка</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="#" onclick="logout()">Выход</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="admin-container">
+    <!-- Форма добавления товара -->
+    <h2>Добавить товар</h2>
+    <form id="product-form" enctype="multipart/form-data">
+      <input type="text" id="name" placeholder="Название" required />
+      <textarea id="description" placeholder="Описание"></textarea>
+      <input type="number" id="price" placeholder="Цена" required />
+      <select id="category" required>
+        <option value="">Выберите категорию</option>
+        <option value="sets">Наборы</option>
+        <option value="rations">Рационы</option>
+        <option value="drying">Лакомства</option>
+        <option value="accessories">Аксессуары</option>
+      </select>
+      <input type="file" id="image" accept="image/*" required />
+      <input type="number" id="stock" placeholder="Количество на складе" required />
+      <button type="submit" class="btn">Добавить товар</button>
+    </form>
+
+    <!-- Список товаров -->
+    <h2>Список товаров</h2>
+    <table id="products-table">
+      <thead>
+        <tr>
+          <th>Название</th>
+          <th>Описание</th>
+          <th>Категория</th>
+          <th>Цена</th>
+          <th>Количество</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+
+<!-- Модальное окно редактирования -->
+<div class="modal" id="edit-modal">
+  <div class="modal-content">
+    <h3>Редактировать товар</h3>
+    <label for="edit-name">Название</label>
+    <input type="text" id="edit-name" />
+
+    <label for="edit-description">Описание</label>
+    <textarea id="edit-description"></textarea>
+
+    <label for="edit-price">Цена</label>
+    <input type="number" id="edit-price" />
+
+    <label for="edit-category">Категория</label>
+    <select id="edit-category">
+      <option value="sets">Наборы</option>
+      <option value="rations">Рационы</option>
+      <option value="drying">Лакомства</option>
+      <option value="accessories">Аксессуары</option>
+    </select>
+
+    <label for="edit-stock">Количество</label>
+    <input type="number" id="edit-stock" />
+
+    <button class="btn" onclick="saveEditedProduct()">Сохранить изменения</button>
+    <button class="btn btn-danger" onclick="closeEditModal()">Отмена</button>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <!-- Логотип -->
+      <div class="logo">
+        <img src="/images/logo-footer.png" alt="Мейнстрим" width="50">
+        <p>© 2024 «Мейнстрим»</p>
+      </div>
+
+      <!-- Контакты -->
+      <div class="contacts">
+        <p>+7 (900) 123-45-67</p>
+        <p>info@mainstream.ru</p>
+        <p>с 9:00 до 21:00 ежедневно</p>
+      </div>
+
+      <!-- Документы -->
+      <div class="documents">
+        <h3>Документы</h3>
+        <ul>
+          <li><a href="privacy-policy.html">Политика в отношении обработки персональных данных</a></li>
+          <li><a href="consent.html">Согласие на обработку персональных данных</a></li>
+          <li><a href="payment-rules.html">Правила оплаты</a></li>
+        </ul>
+      </div>
+
+      <!-- Платежные системы -->
+      <div class="payment-methods">
+        <img src="/images/footer-visa2.png" alt="Visa" width="80">
+        <img src="/images/footer-mastercard2.png" alt="Mastercard" width="80">
+        <img src="/images/footer-mir.png" alt="МИР" width="80">
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+
+  if (!user || user.role !== "admin") {
+    alert("Только админы могут просматривать эту страницу");
+    window.location.href = "login.html";
+  }
+
+  const token = localStorage.getItem("token");
+  if (!token) window.location.href = "login.html";
+
+  let currentProductId = null;
+
+  async function loadProducts() {
+    try {
+      const res = await fetch("http://localhost:3000/api/products", {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      const products = await res.json();
+      renderProducts(products);
+
+    } catch (err) {
+      console.error("Ошибка загрузки товаров:", err.message);
+      alert("Не удалось загрузить список товаров");
+    }
+  }
+
+  function renderProducts(products) {
+    const tbody = document.querySelector("#products-table tbody");
+    tbody.innerHTML = "";
+
+    products.forEach(p => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${p.name}</td>
+        <td>${p.description || "—"}</td>
+        <td>${p.category}</td>
+        <td>${p.price} ₽</td>
+        <td>
+          <input type="number" value="${p.stock}" data-id="${p._id}" onchange="updateStock(this)" style="width: 80px;" />
+        </td>
+        <td>
+          <button class="btn btn-danger" onclick="deleteProduct('${p._id}')">Удалить</button>
+          <button class="btn btn-edit" onclick="prepareEdit('${p._id}')">Редактировать</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ==== Редактирование через модальное окно ====
+  function openEditModal(id, name, description, price, category, stock) {
+    currentProductId = id;
+    document.getElementById("edit-name").value = name;
+    document.getElementById("edit-description").value = description || "";
+    document.getElementById("edit-price").value = price;
+    document.getElementById("edit-category").value = category;
+    document.getElementById("edit-stock").value = stock;
+    document.getElementById("edit-modal").style.display = "flex";
+  }
+
+  function closeEditModal() {
+    document.getElementById("edit-modal").style.display = "none";
+    currentProductId = null;
+  }
+
+  async function saveEditedProduct() {
+    const updated = {
+      name: document.getElementById("edit-name").value.trim(),
+      description: document.getElementById("edit-description").value.trim(),
+      price: parseFloat(document.getElementById("edit-price").value),
+      category: document.getElementById("edit-category").value,
+      stock: parseInt(document.getElementById("edit-stock").value)
+    };
+
+    if (!updated.name || !updated.category || isNaN(updated.price) || isNaN(updated.stock)) {
+      alert("Заполните все поля корректно");
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/products/${currentProductId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(updated)
+      });
+
+      if (res.ok) {
+        alert("Товар обновлён");
+        closeEditModal();
+        loadProducts();
+      } else {
+        const error = await res.json().catch(() => ({ message: "Ошибка сервера" }));
+        alert(error.message || "Не удалось обновить товар");
+      }
+
+    } catch (err) {
+      console.error("Ошибка сети:", err.message);
+      alert("Не удалось подключиться к серверу");
+    }
+  }
+
+  // ==== Подготовка к редактированию ====
+  async function prepareEdit(id) {
+    try {
+      const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+        headers: { "Authorization": "Bearer " + token }
+      });
+
+      if (!res.ok) throw new Error("Не удалось загрузить данные товара");
+
+      const product = await res.json();
+
+      openEditModal(
+        product._id,
+        product.name,
+        product.description || "",
+        product.price,
+        product.category,
+        product.stock
+      );
+
+    } catch (err) {
+      console.error("Ошибка при подготовке к редактированию:", err.message);
+      alert("Не удалось загрузить товар");
+    }
+  }
+
+  // ==== Добавление товара ====
+  document.getElementById("product-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const fileInput = document.getElementById("image");
+    if (!fileInput.files[0]) {
+      alert("Пожалуйста, выберите изображение");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", document.getElementById("name").value);
+    formData.append("description", document.getElementById("description").value);
+    formData.append("price", document.getElementById("price").value);
+    formData.append("category", document.getElementById("category").value);
+    formData.append("stock", document.getElementById("stock").value);
+    formData.append("image", fileInput.files[0]);
+
+    try {
+      const res = await fetch("http://localhost:3000/api/products", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token
+        },
+        body: formData
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Товар добавлен");
+        document.getElementById("product-form").reset();
+        loadProducts();
+      } else {
+        alert(data.message || "Ошибка при добавлении");
+      }
+
+    } catch (err) {
+      console.error("Ошибка сети:", err.message);
+      alert("Не удалось подключиться к серверу");
+    }
+  });
+
+  // ==== Удаление товара ====
+  async function deleteProduct(id) {
+    if (!confirm("Вы уверены, что хотите удалить этот товар?")) return;
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      });
+
+      if (res.ok) {
+        alert("Товар удалён");
+        loadProducts();
+      } else {
+        alert("Ошибка при удалении");
+      }
+
+    } catch (err) {
+      console.error("Ошибка сети:", err.message);
+      alert("Не удалось подключиться к серверу");
+    }
+  }
+
+  // ==== Обновление количества ====
+  async function updateStock(input) {
+    const id = input.dataset.id;
+    const newStock = parseInt(input.value);
+
+    if (!newStock || isNaN(newStock)) {
+      alert("Введите корректное количество");
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ stock: newStock })
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Ошибка обновления:", errorText);
+        alert("Ошибка при обновлении количества");
+        loadProducts(); // обновляем список
+      }
+
+    } catch (err) {
+      console.error("Ошибка сети:", err.message);
+      alert("Не удалось подключиться к серверу");
+    }
+  }
+
+  // ==== Выход ====
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    alert("Вы вышли из аккаунта");
+    window.location.href = "login.html";
+  }
+
+  // ==== Инициализация ====
+  loadProducts();
+</script>
+</body>
+</html>
