@@ -1,3 +1,0 @@
-# nixpacks.toml
-build_cmd = "npm install && npm run start"
-start_cmd = "node server.js"
